@@ -29,11 +29,6 @@ public partial class MainViewModel : ObservableObject
         consoleControl.WriteOutput(message, color ?? Colors.White);
     }
 
-    [RelayCommand]
-    public void ListHidDevice(object param)
-    {
-    }
-
     [ObservableProperty]
     string hidOutReportString = "Input Hex string here";
 
@@ -47,7 +42,7 @@ public partial class MainViewModel : ObservableObject
     Brush usbStatusColor;
 
     [RelayCommand]
-    public void ConnectHidDevice(object param)
+    public void SendHidOutReport(object param)
     {
     }
 

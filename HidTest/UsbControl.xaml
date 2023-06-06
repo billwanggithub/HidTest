@@ -23,8 +23,7 @@
                 </StackPanel>
                 <!--ComboBox ItemsSource="{Binding HidDeviceList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="{Binding SelectedIndex}"  DisplayMemberPath="VidPidString"/-->
                 <!--TextBlock Text="{Binding SelectedIndex}"></TextBlock-->
-                <Button Command="{Binding ListHidDeviceCommand}">List</Button>
-                <Button Command="{Binding ConnectHidDeviceCommand}">Connect</Button>
+                <Button Command="{Binding SendHidOutReportCommand}">Send</Button>
             </StackPanel>
         </GroupBox>
 
