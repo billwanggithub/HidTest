@@ -1,20 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using HidSharp;
-using HidSharp.Utility;
 using HidTest;
 using System;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 using System.Windows.Media;
 using Color = System.Windows.Media.Color;
 
 public partial class MainViewModel : ObservableObject
 {
-    ConsoleControl.WPF.ConsoleControl consoleControl;
-
     [ObservableProperty]
     public TestSettingClass testSetting = new();
+    ConsoleControl.WPF.ConsoleControl consoleControl;
 
     public MainViewModel()
     {
@@ -23,82 +19,73 @@ public partial class MainViewModel : ObservableObject
         AutoConnect();
     }
 
-
     public void WriteConsole(string message, Color? color = null)
     {
         consoleControl.WriteOutput(message, color ?? Colors.White);
     }
 
+    #region HID
+    MyHidClass myHidDevice;
     [ObservableProperty]
     string hidOutReportString = "Input Hex string here";
-
-    DeviceList list;
-    HidDevice[] hidDeviceList;
-    HidDevice hidDevice = null;
-
     [ObservableProperty]
     string usbStatusString = "Disconnected";
     [ObservableProperty]
     Brush usbStatusColor;
 
-    [RelayCommand]
-    public void SendHidOutReport(object param)
-    {
-    }
-
     public void AutoConnect()
     {
         WriteConsole("Start USB Auto Detection\n");
 
-        HidSharpDiagnostics.EnableTracing = true;
-        HidSharpDiagnostics.PerformStrictChecks = true;
-
         UsbStatusColor = Brushes.Red;
-
-        list = DeviceList.Local;
-        list.Changed += DeviceListChangedHandler;
-
-        hidDeviceList = list.GetHidDevices().ToArray();
-
-        Task.Run(async () =>
-        {
-            list.GetHidDevices();
-            await Task.Delay(1000);
-        });
+        myHidDevice = new MyHidClass(TestSetting.UsbVid, TestSetting.UsbPid);
+        myHidDevice.InputReportReceived = InputReportReceived;
+        MyHidClass.localDeviceList.Changed += DeviceListChangedHandler;
+        DeviceListChangedHandler(null, null);
     }
-
-    HidDevice CheckHidDevice()
-    {
-        hidDeviceList = list.GetHidDevices().ToArray();
-        foreach (HidDevice dev in hidDeviceList)
-        {
-            if ((dev.VendorID == 0x0483) && (dev.ProductID == 0x5750))
-            {
-                TestSetting.UsbVid = (uint)dev.VendorID;
-                TestSetting.UsbPid = (uint)dev.ProductID;
-
-                return dev;
-            }
-        }
-        return null;
-    }
-
     void DeviceListChangedHandler(object? sender, EventArgs e)
     {
-        WriteConsole("Device list changed.\n");
-        hidDevice = CheckHidDevice();
-        if (hidDevice == null)
+        //WriteConsole("Device list changed.\n");
+        myHidDevice.CheckHidDevice();
+
+        if (myHidDevice.hidDevice == null)
         {
-            WriteConsole($"Device not Found\n", Colors.Red);
-            UsbStatusString = "DisConnected";
-            UsbStatusColor = Brushes.Red;
+            DeviceRemoved();
         }
         else
         {
-            WriteConsole($"Device Found VID = 0X{hidDevice.VendorID:X4}, PID = 0X{hidDevice.ProductID:X4}\n", Colors.LightGreen);
-            UsbStatusString = "Connected";
-            UsbStatusColor = Brushes.DarkGreen;
+            DeviceConnected();
         }
     }
+
+    void DeviceConnected()
+    {
+        WriteConsole($"Device Found VID = 0X{myHidDevice.venderId:X4}, PID = 0X{myHidDevice.productId:X4}\n", Colors.LightGreen);
+        UsbStatusString = "Connected";
+        UsbStatusColor = Brushes.DarkGreen;
+        myHidDevice.OpenDevice();
+    }
+    void DeviceRemoved()
+    {
+        WriteConsole($"Device not Found\n", Colors.Red);
+        UsbStatusString = "DisConnected";
+        UsbStatusColor = Brushes.Red;
+    }
+
+    void InputReportReceived(byte[] bytes, int length)
+    {
+        if (!myHidDevice.isConnected) { return; }
+        WriteConsole(Encoding.ASCII.GetString(bytes, 0, length) + Environment.NewLine, Colors.LightBlue);
+    }
+    #endregion
+
+    [RelayCommand]
+    public async void SendHidOutReport(object param)
+    {
+        if (!myHidDevice.isConnected) { return; }
+        await myHidDevice.WriteCommandAsync("*IDN?\n");
+    }
+
+
 }
 
