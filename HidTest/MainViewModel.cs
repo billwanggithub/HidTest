@@ -5,6 +5,7 @@ using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using Color = System.Windows.Media.Color;
@@ -21,15 +22,6 @@ public partial class MainViewModel : ObservableObject
         consoleControl = App.mainwindow.consoleCOntrol;
         WriteConsole("Test HID\n", color: Colors.White);
         AutoConnect();
-    }
-
-    public void WriteConsole(string message, Color? color = null)
-    {
-        consoleControl.WriteOutput(message, color ?? Colors.White);
-        App.mainwindow.ConsoleControlScrollViewer.Dispatcher.Invoke(() =>
-        {
-            App.mainwindow.ConsoleControlScrollViewer.ScrollToEnd();
-        });
     }
 
     #region HID
@@ -125,8 +117,40 @@ public partial class MainViewModel : ObservableObject
     }
     #endregion
 
+    #region Functions
+    public void WriteConsole(string message, Color? color = null)
+    {
+        consoleControl.WriteOutput(message, color ?? Colors.White);
+        App.mainwindow.ConsoleControlScrollViewer.Dispatcher.Invoke(() =>
+        {
+            App.mainwindow.ConsoleControlScrollViewer.ScrollToEnd();
+        });
+    }
+    string ReplaceNonPrintableChar(string input)
+    {
+        string output = "";
+
+        foreach (char c in input)
+        {
+            //if (char.IsControl(c) && c != '\n')
+            if (!char.IsLetterOrDigit(c))
+            {
+                // Replace non-printable character with a specific character
+                output += '.';
+            }
+            else
+            {
+                output += c;
+            }
+        }
+
+        return output;
+    }
+    #endregion
+
+    #region Relay Commands
     [RelayCommand]
-    public async void SendHidOutReport(object param)
+    public async Task SendHidOutReportAsync(object param)
     {
         if (!myHidDevice.isConnected) { return; }
 
@@ -192,25 +216,7 @@ public partial class MainViewModel : ObservableObject
         HidInputString = "";
     }
 
-    string ReplaceNonPrintableChar(string input)
-    {
-        string output = "";
+    #endregion
 
-        foreach (char c in input)
-        {
-            //if (char.IsControl(c) && c != '\n')
-            if (!char.IsLetterOrDigit(c))
-            {
-                // Replace non-printable character with a specific character
-                output += '.';
-            }
-            else
-            {
-                output += c;
-            }
-        }
-
-        return output;
-    }
 }
 
