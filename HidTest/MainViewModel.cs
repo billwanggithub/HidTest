@@ -4,12 +4,21 @@ using HidTest;
 using Microsoft.Win32;
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows;
 using System.Windows.Media;
 using Color = System.Windows.Media.Color;
 
+
 public partial class MainViewModel : ObservableObject
 {
+    [DllImport("user32.dll")]
+    private static extern IntPtr SendMessage(IntPtr window, int message, int wparam, int lparam);
+
+    private const int SbBottom = 0x7;
+    private const int WmVscroll = 0x115;
+
     [ObservableProperty]
     public TestSettingClass testSetting = new();
     ConsoleControl.WPF.ConsoleControl consoleControl;
@@ -24,6 +33,10 @@ public partial class MainViewModel : ObservableObject
     public void WriteConsole(string message, Color? color = null)
     {
         consoleControl.WriteOutput(message, color ?? Colors.White);
+        App.mainwindow.ConsoleControlScrollViewer.Dispatcher.Invoke(() =>
+        {
+            App.mainwindow.ConsoleControlScrollViewer.ScrollToEnd();
+        });
     }
 
     #region HID
@@ -32,6 +45,13 @@ public partial class MainViewModel : ObservableObject
     string hidOutputString = "*IDN?\n";
     [ObservableProperty]
     string hidInputString = "";
+    partial void OnHidInputStringChanged(string value)
+    {
+        App.mainwindow.HidInputTextBox.Dispatcher.Invoke(() =>
+        {
+            App.mainwindow.HidInputTextBox.ScrollToEnd();
+        });
+    }
     [ObservableProperty]
     string usbStatusString = "Disconnected";
     [ObservableProperty]
@@ -94,7 +114,7 @@ public partial class MainViewModel : ObservableObject
         if (!myHidDevice.isConnected) { return; }
         if (IsHidInputText)
         {
-            HidInputString += Encoding.ASCII.GetString(bytes, 0, length);
+            HidInputString += ReplaceNonPrintableChar(Encoding.ASCII.GetString(bytes, 0, length));
         }
         else
         {
@@ -108,11 +128,7 @@ public partial class MainViewModel : ObservableObject
             HidInputString += sb.ToString();
         }
 
-        App.mainwindow.HidInputTextBox.Dispatcher.Invoke(() =>
-        {
-            App.mainwindow.HidInputTextBox.ScrollToEnd();
-        });
-
+        WriteConsole("HID Report Received\n");
     }
     #endregion
 
@@ -154,9 +170,54 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
+    public void SaveHidOutputString(object param)
+    {
+        SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+        // Set filter options to allow only text files
+        saveFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
+        saveFileDialog.FilterIndex = 1;
+
+        if (saveFileDialog.ShowDialog() == true)
+        {
+            string filePath = saveFileDialog.FileName;
+
+            // Get the text content that you want to save (from your ViewModel or elsewhere)
+            string textToSave = HidOutputString;
+
+            // Save the text to the selected file
+            File.WriteAllText(filePath, textToSave);
+
+            // Show a message box to indicate that the file was saved successfully
+            MessageBox.Show("File saved successfully!");
+        }
+    }
+
+    [RelayCommand]
     public void ClearHidInputString(object param)
     {
         HidInputString = "";
+    }
+
+    string ReplaceNonPrintableChar(string input)
+    {
+        string output = "";
+
+        foreach (char c in input)
+        {
+            //if (char.IsControl(c) && c != '\n')
+            if (!char.IsLetterOrDigit(c))
+            {
+                // Replace non-printable character with a specific character
+                output += '.';
+            }
+            else
+            {
+                output += c;
+            }
+        }
+
+        return output;
     }
 }
 

@@ -6,7 +6,7 @@
         xmlns:cv="clr-namespace:Converters"
         xmlns:local="clr-namespace:HidTest" xmlns:consoleControl="clr-namespace:ConsoleControl.WPF;assembly=ConsoleControl.WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Width="640" Height="480">
+        Title="HID Test" Width="800" Height="600">
     <Window.Resources>
         <cv:NumberToHexString x:Key="NumberToHexString"/>
         <cv:BoolInverterConverter x:Key="BoolInverterConverter"/>
@@ -29,26 +29,15 @@
                             <!--TextBlock Text="{Binding SelectedIndex}"></TextBlock-->
                         </StackPanel>
                     </GroupBox>
-
-                    <UniformGrid Columns="2">
-                        <GroupBox Header="Output">
-                            <StackPanel>
-                                <RadioButton IsChecked="{Binding IsHidOutputText}">Text</RadioButton>
-                                <RadioButton IsChecked="{Binding IsHidOutputText, Converter={StaticResource BoolInverterConverter}}">Hex</RadioButton>
-                            </StackPanel>
-                        </GroupBox>
-                        <GroupBox Header="Input">
-                            <StackPanel>
-                                <RadioButton IsChecked="{Binding IsHidInputText}">Text</RadioButton>
-                                <RadioButton IsChecked="{Binding IsHidInputText, Converter={StaticResource BoolInverterConverter}}">Hex</RadioButton>
-                            </StackPanel>
-                        </GroupBox>
-                    </UniformGrid>
-
                 </StackPanel>
                 <UniformGrid Columns="2">
                     <GroupBox>
                         <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" VerticalAlignment="Center">Output Report</TextBlock>
+                            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                                <RadioButton IsChecked="{Binding IsHidOutputText}">Text</RadioButton>
+                                <RadioButton IsChecked="{Binding IsHidOutputText, Converter={StaticResource BoolInverterConverter}}">Hex</RadioButton>
+                            </StackPanel>
                             <UniformGrid Columns="2" DockPanel.Dock="Bottom">
                                 <Button Command="{Binding SendHidOutReportCommand}" Margin="2,2,2,2">Send</Button>
                                 <CheckBox IsChecked="{Binding IsSendCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">Command</CheckBox>
@@ -63,6 +52,11 @@
                     </GroupBox>
                     <GroupBox>
                         <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" VerticalAlignment="Center">Input Report</TextBlock>
+                            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                                <RadioButton IsChecked="{Binding IsHidInputText}">Text</RadioButton>
+                                <RadioButton IsChecked="{Binding IsHidInputText, Converter={StaticResource BoolInverterConverter}}">Hex</RadioButton>
+                            </StackPanel>
                             <Button Command="{Binding ClearHidInputStringCommand}" DockPanel.Dock="Bottom">Clear</Button>
                             <TextBox x:Name="HidInputTextBox" x:FieldModifier="public" Text="{Binding HidInputString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                              HorizontalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Visible"  
@@ -75,8 +69,10 @@
             <StackPanel DockPanel.Dock="Bottom">
                 <TextBlock Text="{Binding UsbStatusString}" Foreground="{Binding UsbStatusColor}"></TextBlock>
             </StackPanel>
-            <consoleControl:ConsoleControl x:Name="consoleCOntrol" DockPanel.Dock="Left"  FontFamily="Consolas"
+            <ScrollViewer x:Name="ConsoleControlScrollViewer" x:FieldModifier="public" VerticalScrollBarVisibility="Auto" DockPanel.Dock="Left" >
+            <consoleControl:ConsoleControl x:Name="consoleCOntrol"  FontFamily="Consolas"
             FontSize="14" Width="{Binding ActualWidth, ElementName=dockPanel, Mode=OneWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" Margin="5,5,5,5" />
+            </ScrollViewer>
         </DockPanel>
 
     </Grid>
