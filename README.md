@@ -4,6 +4,7 @@ Copyright © Bill Wang
 
 All rights reserved.
 
+![Gui](docs/gui.png)
 ## Requirements
 
 ### 📦 NuGet Packages
