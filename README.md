@@ -101,7 +101,7 @@ void DeviceListChangedHandler(object? sender, EventArgs e)
 ### Send string to HID
 
 ``` csharp
-public async Task WriteCommandAsync(string command, int timeout = 1)
+public async Task WriteStringAsync(string command)
 ````
 
 ### Send byte array to HID
