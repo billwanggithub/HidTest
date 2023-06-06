@@ -8,6 +8,38 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+/// <summary> 
+/*  ===========
+ *  How to Use:
+ *  ===========
+ *  2025.6.6
+    MyHidClass myHidDevice;
+    myHidDevice = new MyHidClass(TestSetting.UsbVid, TestSetting.UsbPid);
+    myHidDevice.InputReportReceived = InputReportReceived;
+    MyHidClass.localDeviceList.Changed += DeviceListChangedHandler;
+    DeviceListChangedHandler(null, null); // Check USB
+
+    // Parse the HID Input Report
+    void InputReportReceived(byte[] bytes, int length)
+    {
+    }
+
+    // Deal with the USB plug & unplug
+    void DeviceListChangedHandler(object? sender, EventArgs e)
+    {        
+        myHidDevice.CheckHidDevice();
+
+        if (myHidDevice.hidDevice == null)
+        {
+            DeviceRemoved();
+        }
+        else
+        {
+            DeviceConnected();
+        }
+    }
+ */
+/// </summary>
 public class MyHidClass
 {
     public delegate void InputReportReceivedDelegate(byte[] bytes, int length);
@@ -39,6 +71,10 @@ public class MyHidClass
         localDeviceList = DeviceList.Local;
     }
 
+    /// <summary>
+    /// Check if the device is connected
+    /// </summary>
+    /// <returns></returns>
     public HidDevice CheckHidDevice()
     {
         hidDeviceArray = localDeviceList.GetHidDevices().ToArray();
@@ -55,6 +91,9 @@ public class MyHidClass
         return hidDevice;
     }
 
+    /// <summary>
+    /// Initialize the HID stuff
+    /// </summary>
     public void OpenDevice()
     {
         if (hidDevice.TryOpen(out hidStream))
@@ -69,10 +108,8 @@ public class MyHidClass
                 Report report;
                 while (inputReceiver.TryRead(inputReportBuffer, 0, out report))
                 {
-                    // Parse the report if possible.
-                    Console.WriteLine("Reveived HID report");
                     byte[] buffer = new byte[inputReportBuffer.Length - 1];
-                    Array.Copy(inputReportBuffer, 1, buffer, 0, buffer.Length);
+                    Array.Copy(inputReportBuffer, 1, buffer, 0, buffer.Length); // copy th hid report excluding the report id
                     InputReportReceived(buffer, buffer.Length);
                 }
             };
@@ -81,6 +118,10 @@ public class MyHidClass
         }
     }
 
+    /// <summary>
+    /// Write byte array to HID
+    /// </summary>
+    /// <param name="buffer"></param>
     public void WriteBytes(byte[] buffer)
     {
         byte[] hidOutputReportBuffer = new byte[65];
@@ -93,6 +134,10 @@ public class MyHidClass
         hidStream.Write(hidOutputReportBuffer, 0, hidOutputReportBuffer.Length);
     }
 
+    /// <summary>
+    /// Write byte array to HID
+    /// </summary>
+    /// <param name="buffer"></param>
     public async Task WriteBytesAsync(byte[] buffer, int timeout = 1)
     {
         byte[] hidOutputReportBuffer = new byte[65];
@@ -106,18 +151,36 @@ public class MyHidClass
         await Task.Delay(timeout);
     }
 
+    /// <summary>
+    /// Write string to HID. String size can be greater than 64 characters.
+    /// </summary>
+    /// <param name="command"></param>
+    /// <param name="timeout"></param>
+    /// <returns></returns>
     public void WriteString(string command)
     {
         byte[] command_bytes = Encoding.ASCII.GetBytes(command);
         WriteBytes(command_bytes);
     }
 
+    /// <summary>
+    /// Write string to HID. String size can be greater than 64 characters.
+    /// </summary>
+    /// <param name="command"></param>
+    /// <param name="timeout"></param>
+    /// <returns></returns>
     public async Task WriteStringAsync(string command)
     {
         byte[] command_bytes = Encoding.ASCII.GetBytes(command);
         await WriteBytesAsync(command_bytes).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Write string with command header 0xA1 to HID. String size can be greater than 64 characters.
+    /// </summary>
+    /// <param name="command"></param>
+    /// <param name="timeout"></param>
+    /// <returns></returns>
     public void WriteCommand(string command, int timeout = 1)
     {
         byte[] hidOutputReportBuffer = new byte[65];
@@ -164,6 +227,13 @@ public class MyHidClass
         }
     }
 
+
+    /// <summary>
+    /// Write string with command header 0xA1 to HID. String size can be greater than 64 characters.
+    /// </summary>
+    /// <param name="command"></param>
+    /// <param name="timeout"></param>
+    /// <returns></returns>
     public async Task WriteCommandAsync(string command, int timeout = 1)
     {
         byte[] hidOutputReportBuffer = new byte[65];

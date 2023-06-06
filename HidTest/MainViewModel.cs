@@ -4,7 +4,6 @@ using HidTest;
 using Microsoft.Win32;
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
@@ -13,12 +12,6 @@ using Color = System.Windows.Media.Color;
 
 public partial class MainViewModel : ObservableObject
 {
-    [DllImport("user32.dll")]
-    private static extern IntPtr SendMessage(IntPtr window, int message, int wparam, int lparam);
-
-    private const int SbBottom = 0x7;
-    private const int WmVscroll = 0x115;
-
     [ObservableProperty]
     public TestSettingClass testSetting = new();
     ConsoleControl.WPF.ConsoleControl consoleControl;
@@ -78,7 +71,7 @@ public partial class MainViewModel : ObservableObject
         myHidDevice = new MyHidClass(TestSetting.UsbVid, TestSetting.UsbPid);
         myHidDevice.InputReportReceived = InputReportReceived;
         MyHidClass.localDeviceList.Changed += DeviceListChangedHandler;
-        DeviceListChangedHandler(null, null);
+        DeviceListChangedHandler(null, null); // Check USB
     }
     void DeviceListChangedHandler(object? sender, EventArgs e)
     {
