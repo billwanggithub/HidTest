@@ -1,19 +1,23 @@
-# HidTest
+# Hid Test
+
+Copyright © Bill Wang 
+
+All rights reserved.
 
 ## Requirements
 
-### HID
+### 📦 NuGet Packages
 
 - HIDSharp
+- CommunityToolkit.Mvvm for MVVM ViewModel Binding
 
-### WPF
+### 📬 IDE
 
 - Visual Studio 2022
 - .net 6.0
-- CommunityToolkit.Mvvm for MVVM ViewModel Binding
 
 
-### How to Use
+### 🙌 Getting Started
 
 ### Initialize Hid Device
 
