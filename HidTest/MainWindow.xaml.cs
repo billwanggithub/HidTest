@@ -14,7 +14,6 @@ namespace HidTest
             Loaded += (s, e) =>
             {
                 this.DataContext = App.Current.mainViewModel;
-                this.usbControl.DataContext = App.Current.mainViewModel;
             };
         }
     }

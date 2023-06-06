@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HidTest;
+using Microsoft.Win32;
 using System;
+using System.IO;
 using System.Text;
 using System.Windows.Media;
 using Color = System.Windows.Media.Color;
@@ -11,11 +13,6 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     public TestSettingClass testSetting = new();
     ConsoleControl.WPF.ConsoleControl consoleControl;
-
-    [ObservableProperty]
-    public bool isHidInputText = true;
-    [ObservableProperty]
-    public bool isHidOutputText = true;
 
     public MainViewModel()
     {
@@ -34,11 +31,24 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     string hidOutputString = "*IDN?\n";
     [ObservableProperty]
-    string hidInputString = "Input";
+    string hidInputString = "";
     [ObservableProperty]
     string usbStatusString = "Disconnected";
     [ObservableProperty]
     Brush usbStatusColor;
+    [ObservableProperty]
+    public bool isHidInputText = true;
+    [ObservableProperty]
+    public bool isHidOutputText = true;
+    [ObservableProperty]
+    public bool isSendCommand = true;
+    partial void OnIsSendCommandChanged(bool value)
+    {
+        if (value)
+        {
+            IsHidOutputText = value;
+        }
+    }
 
     public void AutoConnect()
     {
@@ -82,7 +92,27 @@ public partial class MainViewModel : ObservableObject
     void InputReportReceived(byte[] bytes, int length)
     {
         if (!myHidDevice.isConnected) { return; }
-        WriteConsole(Encoding.ASCII.GetString(bytes, 0, length) + Environment.NewLine, Colors.LightBlue);
+        if (IsHidInputText)
+        {
+            HidInputString += Encoding.ASCII.GetString(bytes, 0, length);
+        }
+        else
+        {
+            StringBuilder sb = new StringBuilder(bytes.Length * 2);
+
+            foreach (byte b in bytes)
+            {
+                sb.AppendFormat("{0:x2} ", b);
+            }
+
+            HidInputString += sb.ToString();
+        }
+
+        App.mainwindow.HidInputTextBox.Dispatcher.Invoke(() =>
+        {
+            App.mainwindow.HidInputTextBox.ScrollToEnd();
+        });
+
     }
     #endregion
 
@@ -90,10 +120,43 @@ public partial class MainViewModel : ObservableObject
     public async void SendHidOutReport(object param)
     {
         if (!myHidDevice.isConnected) { return; }
-        if (IsHidOutputText)
+
+        if (IsSendCommand)
         {
             await myHidDevice.WriteCommandAsync(HidOutputString);
         }
+        else
+        {
+            if (IsHidOutputText)
+            {
+                await myHidDevice.WriteStringAsync(HidOutputString);
+            }
+        }
+    }
+
+    [RelayCommand]
+    public void LoadHidOutputString(object param)
+    {
+        OpenFileDialog openFileDialog = new OpenFileDialog();
+
+        // Set filter options to allow only text files
+        openFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
+        openFileDialog.FilterIndex = 1;
+
+        if (openFileDialog.ShowDialog() == true)
+        {
+            string filePath = openFileDialog.FileName;
+
+            // Read the text from the file
+            HidOutputString = File.ReadAllText(filePath, Encoding.UTF8);
+
+        }
+    }
+
+    [RelayCommand]
+    public void ClearHidInputString(object param)
+    {
+        HidInputString = "";
     }
 }
 

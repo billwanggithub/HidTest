@@ -106,6 +106,18 @@ public class MyHidClass
         await Task.Delay(timeout);
     }
 
+    public void WriteString(string command)
+    {
+        byte[] command_bytes = Encoding.ASCII.GetBytes(command);
+        WriteBytes(command_bytes);
+    }
+
+    public async Task WriteStringAsync(string command)
+    {
+        byte[] command_bytes = Encoding.ASCII.GetBytes(command);
+        await WriteBytesAsync(command_bytes).ConfigureAwait(false);
+    }
+
     public void WriteCommand(string command, int timeout = 1)
     {
         byte[] hidOutputReportBuffer = new byte[65];
@@ -194,7 +206,7 @@ public class MyHidClass
             Array.Copy(command_bytes, j * command_chunk_size, hidOutputReportBuffer, 4, command_chunk_size);
             //Array.Copy(hidOutputReportBuffer, 0, outputReportBuffer, 1, hidOutputReportBuffer.Length);
             //hidStream.Write(outputReportBuffer, 0, outputReportBuffer.Length);
-            await hidStream.WriteAsync(hidOutputReportBuffer, 0, hidOutputReportBuffer.Length);
+            await hidStream.WriteAsync(hidOutputReportBuffer, 0, hidOutputReportBuffer.Length).ConfigureAwait(false); ;
         }
         await Task.Delay(timeout);
     }
