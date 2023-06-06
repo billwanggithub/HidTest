@@ -90,9 +90,10 @@ public partial class MainViewModel : ObservableObject
     public async void SendHidOutReport(object param)
     {
         if (!myHidDevice.isConnected) { return; }
-        await myHidDevice.WriteCommandAsync("*IDN?\n");
+        if (IsHidOutputText)
+        {
+            await myHidDevice.WriteCommandAsync(HidOutputString);
+        }
     }
-
-
 }
 
