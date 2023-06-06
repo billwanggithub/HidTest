@@ -12,6 +12,11 @@ public partial class MainViewModel : ObservableObject
     public TestSettingClass testSetting = new();
     ConsoleControl.WPF.ConsoleControl consoleControl;
 
+    [ObservableProperty]
+    public bool isHidInputText = true;
+    [ObservableProperty]
+    public bool isHidOutputText = true;
+
     public MainViewModel()
     {
         consoleControl = App.mainwindow.consoleCOntrol;
@@ -27,7 +32,9 @@ public partial class MainViewModel : ObservableObject
     #region HID
     MyHidClass myHidDevice;
     [ObservableProperty]
-    string hidOutReportString = "Input Hex string here";
+    string hidOutputString = "*IDN?\n";
+    [ObservableProperty]
+    string hidInputString = "Input";
     [ObservableProperty]
     string usbStatusString = "Disconnected";
     [ObservableProperty]

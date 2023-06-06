@@ -8,9 +8,35 @@
         Title="MainWindow" Width="640" Height="480">
     <Grid>
         <DockPanel>
-            <DockPanel DockPanel.Dock="Top">
-                <local:UsbControl x:Name="usbControl" x:FieldModifier="public" DockPanel.Dock="Left"  HorizontalAlignment="Left"  VerticalAlignment="Top"/>
-                <TextBox DockPanel.Dock="Right" Background="LightPink" Margin="5,5,5,5" Text="{Binding HidOutReportString}" FontFamily="Consolas"></TextBox>
+            <DockPanel DockPanel.Dock="Top" Height="150">
+                <StackPanel>
+                    <local:UsbControl x:Name="usbControl" x:FieldModifier="public" DockPanel.Dock="Left"  HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+                    <UniformGrid Columns="2">
+                        <GroupBox Header="Output">
+                            <StackPanel>
+                                <RadioButton IsChecked="{Binding IsHidOutputText}">Text</RadioButton>
+                                <RadioButton>Hex</RadioButton>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Header="Input">
+                            <StackPanel>
+                                <RadioButton IsChecked="{Binding IsHidInputText}">Text</RadioButton>
+                                <RadioButton>Hex</RadioButton>
+                            </StackPanel>
+                        </GroupBox>
+                    </UniformGrid>
+
+                </StackPanel>
+                <UniformGrid Columns="2">
+                    <TextBox Text="{Binding HidOutputString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                             HorizontalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Auto"  
+                             TextWrapping="Wrap"  FontFamily="Consolas" FontSize="16" Margin="5,5,5,5" BorderThickness="2,2,2,2" 
+                             Background="Pink" Foreground="Blue" TextAlignment="Left"/>
+                    <TextBox Text="{Binding HidInputString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                             HorizontalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Auto"  
+                             TextWrapping="Wrap"  FontFamily="Consolas" FontSize="16" Margin="5,5,5,5" BorderThickness="2,2,2,2" 
+                             Background="Blue" Foreground="Yellow" TextAlignment="Left"/>
+                </UniformGrid>
             </DockPanel>
             <StackPanel DockPanel.Dock="Bottom">
                 <TextBlock Text="{Binding UsbStatusString}" Foreground="{Binding UsbStatusColor}"></TextBlock>
