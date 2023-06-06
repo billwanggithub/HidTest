@@ -5,8 +5,8 @@ public partial class TestSettingClass : ObservableObject
 {
     [JsonIgnore]
     [ObservableProperty]
-    public int usbVid = 0x0483;
+    public uint usbVid;
     [JsonIgnore]
     [ObservableProperty]
-    public int usbPid = 0x5750;
+    public uint usbPid;
 }

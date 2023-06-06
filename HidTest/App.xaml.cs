@@ -1,10 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using ViewModes;
 
@@ -17,7 +12,7 @@ namespace HidTest
     {
         public IServiceProvider Services { get; }
         public new static App Current => (App)Application.Current;
-        public static MainWindow? mainwindow { get; set; } = new MainWindow();
+        public static MainWindow mainwindow { get; set; } = new MainWindow();
         public MainViewModel mainViewModel; //用App.Current.mainViewModel呼叫
 
         public App()
@@ -38,7 +33,7 @@ namespace HidTest
             this.MainWindow.Top = 0;
             this.MainWindow.Left = 0;
             this.MainWindow.Show();
-            
+
 
             base.OnStartup(e);
         }

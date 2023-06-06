@@ -21,8 +21,10 @@
                     <TextBlock TextAlignment="Left"  VerticalAlignment="Center" Width="60" FontWeight="Bold" FontStyle="Italic" FontFamily="Consolas" ToolTip="PID"><Run Text="PID 0X"/></TextBlock>
                     <TextBox Text="{Binding TestSetting.UsbPid, Converter={StaticResource NumberToHexString}, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="80"  Background="LightBlue" FontWeight="Bold" ToolTip="PID"/>
                 </StackPanel>
-                <ComboBox ItemsSource="{Binding HidDeviceList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="{Binding HidDeviceSelectedIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                <Button>Connect</Button>
+                <!--ComboBox ItemsSource="{Binding HidDeviceList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="{Binding SelectedIndex}"  DisplayMemberPath="VidPidString"/-->
+                <!--TextBlock Text="{Binding SelectedIndex}"></TextBlock-->
+                <Button Command="{Binding ListHidDeviceCommand}">List</Button>
+                <Button Command="{Binding ConnectHidDeviceCommand}">Connect</Button>
             </StackPanel>
         </GroupBox>
 

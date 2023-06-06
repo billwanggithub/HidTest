@@ -5,13 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HidTest" xmlns:consoleControl="clr-namespace:ConsoleControl.WPF;assembly=ConsoleControl.WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Width="600" Height="343">
+        Title="MainWindow" Width="600" Height="356">
     <Grid>
         <DockPanel>
             <DockPanel DockPanel.Dock="Top">
                 <local:UsbControl x:Name="usbControl" x:FieldModifier="public" DockPanel.Dock="Left"  HorizontalAlignment="Left"  VerticalAlignment="Top"/>
                 <TextBox DockPanel.Dock="Right" Background="LightPink">Test</TextBox>
             </DockPanel>
+            <StackPanel DockPanel.Dock="Bottom">
+                <TextBlock Text="{Binding UsbStatusString}" Foreground="{Binding UsbStatusColor}"></TextBlock>
+            </StackPanel>
             <consoleControl:ConsoleControl x:Name="consoleCOntrol" DockPanel.Dock="Left" Height="200"
             FontSize="14" Width="{Binding ActualWidth, ElementName=dockPanel, Mode=OneWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" Margin="5,5,5,5" />
         </DockPanel>
