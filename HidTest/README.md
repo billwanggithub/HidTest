@@ -1,0 +1,107 @@
+# HidTest
+
+## Requirements
+
+### HID
+
+- HIDSharp
+
+### WPF
+
+- Visual Studio 2022
+- .net 6.0
+- CommunityToolkit.Mvvm for MVVM ViewModel Binding
+
+
+### How to Use
+
+### Initialize Hid Device
+
+```csharp
+MyHidClass myHidDevice;
+myHidDevice = new MyHidClass(TestSetting.UsbVid, TestSetting.UsbPid);
+```
+
+### Add USB Plug/Unplug Event
+
+```csharp
+MyHidClass.localDeviceList.Changed += DeviceListChangedHandler;
+
+// Deal with the USB plug & unplug
+void DeviceListChangedHandler(object? sender, EventArgs e)
+{        
+    myHidDevice.CheckHidDevice();
+
+    if (myHidDevice.hidDevice == null)
+    {
+        DeviceRemoved();
+    }
+    else
+    {
+        DeviceConnected();
+    }
+}
+```
+
+### Add HID Input Report Callback
+
+```csharp
+myHidDevice.InputReportReceived = InputReportReceived;
+
+// Parse the HID Input Report
+void InputReportReceived(byte[] bytes, int length)
+{
+    // Decode bytes
+}
+```
+
+### Check USB at startup
+
+```csharp
+DeviceListChangedHandler(null, null); // Check USB
+```
+
+### Complete Example
+
+```csharp
+MyHidClass myHidDevice;
+myHidDevice = new MyHidClass(TestSetting.UsbVid, TestSetting.UsbPid);
+myHidDevice.InputReportReceived = InputReportReceived;
+MyHidClass.localDeviceList.Changed += DeviceListChangedHandler;
+DeviceListChangedHandler(null, null); // Check USB
+
+// Parse the HID Input Report
+void InputReportReceived(byte[] bytes, int length)
+{
+    // Decode bytes
+}
+
+// Deal with the USB plug & unplug
+void DeviceListChangedHandler(object? sender, EventArgs e)
+{        
+    myHidDevice.CheckHidDevice();
+
+    if (myHidDevice.hidDevice == null)
+    {
+        DeviceRemoved();
+    }
+    else
+    {
+        DeviceConnected();
+    }
+}
+```
+
+## Write to HID
+
+### Send string to HID
+
+``` csharp
+public async Task WriteCommandAsync(string command, int timeout = 1)
+````
+
+### Send byte array to HID
+
+```csharp
+async Task WriteBytesAsync(byte[] buffer, int timeout = 1)
+```
