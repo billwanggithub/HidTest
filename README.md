@@ -13,14 +13,16 @@
 - CommunityToolkit.Mvvm for MVVM ViewModel Binding
 
 
-## Initialize Hid Device
+### How to Use
+
+### Initialize Hid Device
 
 ```csharp
 MyHidClass myHidDevice;
 myHidDevice = new MyHidClass(TestSetting.UsbVid, TestSetting.UsbPid);
 ```
 
-## Add USB Plug/Unplug Event
+### Add USB Plug/Unplug Event
 
 ```csharp
 MyHidClass.localDeviceList.Changed += DeviceListChangedHandler;
@@ -41,7 +43,7 @@ void DeviceListChangedHandler(object? sender, EventArgs e)
 }
 ```
 
-## Add HID Input Report Callback
+### Add HID Input Report Callback
 
 ```csharp
 myHidDevice.InputReportReceived = InputReportReceived;
@@ -53,13 +55,13 @@ void InputReportReceived(byte[] bytes, int length)
 }
 ```
 
-## Check USB at startup
+### Check USB at startup
 
 ```csharp
 DeviceListChangedHandler(null, null); // Check USB
 ```
 
-## Complete Example
+### Complete Example
 
 ```csharp
 MyHidClass myHidDevice;
