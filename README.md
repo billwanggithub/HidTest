@@ -17,7 +17,7 @@ All rights reserved.
 - .net 6.0
 
 
-### 🙌 Getting Started
+## 🙌 Getting Started
 
 ### Initialize Hid Device
 
