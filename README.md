@@ -5,12 +5,13 @@ Copyright © Bill Wang
 All rights reserved.
 
 ![Gui](docs/gui.png)
+
 ## Requirements
 
 ### 📦 NuGet Packages
 
 - HIDSharp
-- CommunityToolkit.Mvvm for MVVM ViewModel Binding
+- [CommunityToolkit.Mvvm for MVVM ViewModel Binding](https://github.com/CommunityToolkit/MVVM-Samples)
 
 ### 📬 IDE
 
@@ -110,3 +111,7 @@ public async Task WriteStringAsync(string command)
 ```csharp
 async Task WriteBytesAsync(byte[] buffer, int timeout = 1)
 ```
+
+## References
+
+- https://devblogs.microsoft.com/dotnet/announcing-the-dotnet-community-toolkit-800/
