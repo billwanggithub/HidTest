@@ -34,6 +34,8 @@ public partial class MainViewModel : ObservableObject
     {
     }
 
+    [ObservableProperty]
+    string hidOutReportString = "Input Hex string here";
 
     DeviceList list;
     HidDevice[] hidDeviceList;

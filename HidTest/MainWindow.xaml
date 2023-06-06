@@ -10,12 +10,12 @@
         <DockPanel>
             <DockPanel DockPanel.Dock="Top">
                 <local:UsbControl x:Name="usbControl" x:FieldModifier="public" DockPanel.Dock="Left"  HorizontalAlignment="Left"  VerticalAlignment="Top"/>
-                <TextBox DockPanel.Dock="Right" Background="LightPink" Margin="5,5,5,5">Test</TextBox>
+                <TextBox DockPanel.Dock="Right" Background="LightPink" Margin="5,5,5,5" Text="{Binding HidOutReportString}"></TextBox>
             </DockPanel>
             <StackPanel DockPanel.Dock="Bottom">
                 <TextBlock Text="{Binding UsbStatusString}" Foreground="{Binding UsbStatusColor}"></TextBlock>
             </StackPanel>
-            <consoleControl:ConsoleControl x:Name="consoleCOntrol" DockPanel.Dock="Left" Height="400"
+            <consoleControl:ConsoleControl x:Name="consoleCOntrol" DockPanel.Dock="Left" Height="400" FontFamily="Concolas"
             FontSize="14" Width="{Binding ActualWidth, ElementName=dockPanel, Mode=OneWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" Margin="5,5,5,5" />
         </DockPanel>
 
