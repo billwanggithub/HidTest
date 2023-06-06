@@ -114,4 +114,5 @@ async Task WriteBytesAsync(byte[] buffer, int timeout = 1)
 
 ## References
 
-- https://devblogs.microsoft.com/dotnet/announcing-the-dotnet-community-toolkit-800/
+- [community-toolkit-mvvm](https://devblogs.microsoft.com/dotnet/announcing-the-dotnet-community-toolkit-800/)
+- [Microsoft.Xaml.Behaviors.Wpf](https://github.com/Microsoft/XamlBehaviorsWpf/wiki)

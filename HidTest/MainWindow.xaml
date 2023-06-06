@@ -6,6 +6,7 @@
         xmlns:cv="clr-namespace:Converters"
         xmlns:local="clr-namespace:HidTest" xmlns:consoleControl="clr-namespace:ConsoleControl.WPF;assembly=ConsoleControl.WPF"
         mc:Ignorable="d"
+        xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
         Title="HID Test" Width="800" Height="600">
     <Window.Resources>
         <cv:NumberToHexString x:Key="NumberToHexString"/>
@@ -39,7 +40,7 @@
                                 <RadioButton IsChecked="{Binding IsHidOutputText, Converter={StaticResource BoolInverterConverter}}">Hex</RadioButton>
                             </StackPanel>
                             <UniformGrid Columns="2" DockPanel.Dock="Bottom">
-                                <Button Command="{Binding SendHidOutReportCommand}" Margin="2,2,2,2">Send</Button>
+                                <Button Command="{Binding SendHidOutReportCommand}" IsEnabled="{Binding MyHidDevice.IsConnected}" Margin="2,2,2,2">Send</Button>
                                 <CheckBox IsChecked="{Binding IsSendCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">Command</CheckBox>
                                 <Button Command="{Binding LoadHidOutputStringCommand}" Margin="2,2,2,2">Load</Button>
                                 <Button Command="{Binding SaveHidOutputStringCommand}" Margin="2,2,2,2">Save</Button>
@@ -59,6 +60,7 @@
                             </StackPanel>
                             <Button Command="{Binding ClearHidInputStringCommand}" DockPanel.Dock="Bottom">Clear</Button>
                             <TextBox x:Name="HidInputTextBox" x:FieldModifier="public" Text="{Binding HidInputString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                     
                              HorizontalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Visible"  
                              TextWrapping="Wrap"  FontFamily="Consolas" FontSize="16" Margin="5,5,5,5" BorderThickness="2,2,2,2" 
                              Background="Blue" Foreground="Yellow" TextAlignment="Left" AcceptsReturn="True"/>

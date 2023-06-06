@@ -25,6 +25,7 @@ public partial class MainViewModel : ObservableObject
     }
 
     #region HID
+    [ObservableProperty]
     MyHidClass myHidDevice;
     [ObservableProperty]
     string hidOutputString = "*IDN?\n";
@@ -60,17 +61,17 @@ public partial class MainViewModel : ObservableObject
         WriteConsole("Start USB Auto Detection\n");
 
         UsbStatusColor = Brushes.Red;
-        myHidDevice = new MyHidClass(TestSetting.UsbVid, TestSetting.UsbPid);
-        myHidDevice.InputReportReceived = InputReportReceived;
+        MyHidDevice = new MyHidClass(TestSetting.UsbVid, TestSetting.UsbPid);
+        MyHidDevice.InputReportReceived = InputReportReceived;
         MyHidClass.localDeviceList.Changed += DeviceListChangedHandler;
         DeviceListChangedHandler(null, null); // Check USB
     }
-    void DeviceListChangedHandler(object? sender, EventArgs e)
+    void DeviceListChangedHandler(object sender, EventArgs e)
     {
         //WriteConsole("Device list changed.\n");
-        myHidDevice.CheckHidDevice();
+        MyHidDevice.CheckHidDevice();
 
-        if (myHidDevice.hidDevice == null)
+        if (MyHidDevice.hidDevice == null)
         {
             DeviceRemoved();
         }
@@ -82,10 +83,10 @@ public partial class MainViewModel : ObservableObject
 
     void DeviceConnected()
     {
-        WriteConsole($"Device Found VID = 0X{myHidDevice.venderId:X4}, PID = 0X{myHidDevice.productId:X4}\n", Colors.LightGreen);
+        WriteConsole($"Device Found VID = 0X{MyHidDevice.venderId:X4}, PID = 0X{MyHidDevice.productId:X4}\n", Colors.LightGreen);
         UsbStatusString = "Connected";
         UsbStatusColor = Brushes.DarkGreen;
-        myHidDevice.OpenDevice();
+        MyHidDevice.OpenDevice();
     }
     void DeviceRemoved()
     {
@@ -96,7 +97,7 @@ public partial class MainViewModel : ObservableObject
 
     void InputReportReceived(byte[] bytes, int length)
     {
-        if (!myHidDevice.isConnected) { return; }
+        if (!MyHidDevice.IsConnected) { return; }
         if (IsHidInputText)
         {
             HidInputString += ReplaceNonPrintableChar(Encoding.ASCII.GetString(bytes, 0, length));
@@ -152,17 +153,17 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     public async Task SendHidOutReportAsync(object param)
     {
-        if (!myHidDevice.isConnected) { return; }
+        if (!MyHidDevice.IsConnected) { return; }
 
         if (IsSendCommand)
         {
-            await myHidDevice.WriteCommandAsync(HidOutputString);
+            await MyHidDevice.WriteCommandAsync(HidOutputString);
         }
         else
         {
             if (IsHidOutputText)
             {
-                await myHidDevice.WriteStringAsync(HidOutputString);
+                await MyHidDevice.WriteStringAsync(HidOutputString);
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using HidSharp;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using HidSharp;
 using HidSharp.Reports;
 using HidSharp.Reports.Input;
 using HidSharp.Utility;
@@ -40,12 +41,13 @@ using System.Threading.Tasks;
     }
  */
 /// </summary>
-public class MyHidClass
+public partial class MyHidClass : ObservableObject
 {
     public delegate void InputReportReceivedDelegate(byte[] bytes, int length);
     public InputReportReceivedDelegate InputReportReceived;
 
-    public bool isConnected;
+    [ObservableProperty]
+    public bool isConnected = false;
 
     public uint venderId { get; set; }
     public uint productId { get; set; }
@@ -86,7 +88,7 @@ public class MyHidClass
                 return hidDevice;
             }
         }
-        isConnected = false;
+        IsConnected = false;
         hidDevice = null;
         return hidDevice;
     }
@@ -114,7 +116,7 @@ public class MyHidClass
                 }
             };
             inputReceiver.Start(hidStream);
-            isConnected = true;
+            IsConnected = true;
         }
     }
 
