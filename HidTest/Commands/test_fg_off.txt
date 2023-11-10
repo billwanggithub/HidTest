@@ -1,0 +1,5 @@
+CAP:false
+CAP:stop
+DEBUG:capture:off
+PWM1:set:10000:0
+RELAY:disable

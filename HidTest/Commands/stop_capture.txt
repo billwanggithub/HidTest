@@ -1,0 +1,3 @@
+INA228:disable
+RELAY:disable
+CAP:false

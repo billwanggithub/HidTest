@@ -1,0 +1,84 @@
+﻿<Window x:Class="HidTest.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:cv="clr-namespace:Converters"
+        xmlns:local="clr-namespace:HidTest" xmlns:consoleControl="clr-namespace:ConsoleControl.WPF;assembly=ConsoleControl.WPF"
+        mc:Ignorable="d"
+        xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+        Title="HID Test" Width="800" Height="600">
+    <Window.Resources>
+        <cv:NumberToHexString x:Key="NumberToHexString"/>
+        <cv:BoolInverterConverter x:Key="BoolInverterConverter"/>
+    </Window.Resources>
+    <Grid>
+        <DockPanel>
+            <DockPanel DockPanel.Dock="Top" Height="300">
+                <StackPanel>
+                    <GroupBox Header=" USB">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="5,5,5,5">
+                                <TextBlock TextAlignment="Left"  VerticalAlignment="Center" Width="60" FontWeight="Bold" FontStyle="Italic" FontFamily="Consolas" ToolTip="VID"><Run Text="VID 0X"/></TextBlock>
+                                <TextBox Text="{Binding TestSetting.UsbVid, Converter={StaticResource NumberToHexString}, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="80"  Background="LightBlue" FontWeight="Bold" ToolTip="VID"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="5,5,5,5">
+                                <TextBlock TextAlignment="Left"  VerticalAlignment="Center" Width="60" FontWeight="Bold" FontStyle="Italic" FontFamily="Consolas" ToolTip="PID"><Run Text="PID 0X"/></TextBlock>
+                                <TextBox Text="{Binding TestSetting.UsbPid, Converter={StaticResource NumberToHexString}, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="80"  Background="LightBlue" FontWeight="Bold" ToolTip="PID"/>
+                            </StackPanel>
+                            <!--ComboBox ItemsSource="{Binding HidDeviceList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="{Binding SelectedIndex}"  DisplayMemberPath="VidPidString"/-->
+                            <!--TextBlock Text="{Binding SelectedIndex}"></TextBlock-->
+                        </StackPanel>
+                    </GroupBox>
+                    <UniformGrid Columns="2">
+                        <Button Command="{Binding Test1Command}" Margin="2,2,2,2">Test1</Button>
+                        <Button Command="{Binding Test2Command}" Margin="2,2,2,2">Test2</Button>
+                    </UniformGrid>
+                </StackPanel>
+                <UniformGrid Columns="2">
+                    <GroupBox>
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" VerticalAlignment="Center">Output Report</TextBlock>
+                            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                                <RadioButton IsChecked="{Binding IsHidOutputText}">Text</RadioButton>
+                                <RadioButton IsChecked="{Binding IsHidOutputText, Converter={StaticResource BoolInverterConverter}}">Hex</RadioButton>
+                            </StackPanel>
+                            <UniformGrid Columns="2" DockPanel.Dock="Bottom">
+                                <Button Command="{Binding SendHidOutReportCommand}" IsEnabled="{Binding MyHidDevice.IsConnected}" Margin="2,2,2,2">Send</Button>
+                                <CheckBox IsChecked="{Binding IsSendCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">Command</CheckBox>
+                                <Button Command="{Binding LoadHidOutputStringCommand}" Margin="2,2,2,2">Load</Button>
+                                <Button Command="{Binding SaveHidOutputStringCommand}" Margin="2,2,2,2">Save</Button>
+                            </UniformGrid>
+                            <TextBox Text="{Binding HidOutputString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                             HorizontalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Visible"  
+                             TextWrapping="Wrap"  FontFamily="Consolas" FontSize="16" Margin="5,5,5,5" BorderThickness="2,2,2,2" 
+                             Background="Pink" Foreground="Blue" TextAlignment="Left" AcceptsReturn="True"/>
+                        </DockPanel>
+                    </GroupBox>
+                    <GroupBox>
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" VerticalAlignment="Center">Input Report</TextBlock>
+                            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                                <RadioButton IsChecked="{Binding IsHidInputText}">Text</RadioButton>
+                                <RadioButton IsChecked="{Binding IsHidInputText, Converter={StaticResource BoolInverterConverter}}">Hex</RadioButton>
+                            </StackPanel>
+                            <Button Command="{Binding ClearHidInputStringCommand}" DockPanel.Dock="Bottom">Clear</Button>
+                            <TextBox x:Name="HidInputTextBox" x:FieldModifier="public" Text="{Binding HidInputString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"                                      
+                             HorizontalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Visible"  
+                             TextWrapping="Wrap"  FontFamily="Consolas" FontSize="16" Margin="5,5,5,5" BorderThickness="2,2,2,2" 
+                             Background="Blue" Foreground="Yellow" TextAlignment="Left" AcceptsReturn="True"/>
+                        </DockPanel>
+                    </GroupBox>
+                </UniformGrid>
+            </DockPanel>
+            <StackPanel DockPanel.Dock="Bottom">
+                <TextBlock Text="{Binding UsbStatusString}" Foreground="{Binding UsbStatusColor}"></TextBlock>
+            </StackPanel>
+            <ScrollViewer x:Name="ConsoleControlScrollViewer" x:FieldModifier="public" VerticalScrollBarVisibility="Auto" DockPanel.Dock="Left" >
+                <consoleControl:ConsoleControl x:Name="consoleCOntrol"  FontFamily="Consolas"
+            FontSize="14" Width="{Binding ActualWidth, ElementName=dockPanel, Mode=OneWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" Margin="5,5,5,5" />
+            </ScrollViewer>
+        </DockPanel>
+
+    </Grid>
+</Window>

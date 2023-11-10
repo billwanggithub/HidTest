@@ -1,0 +1,5 @@
+*IDN?
+APP_BUID?
+INA22x:exist?
+INA22x:enable
+INA22x:get?

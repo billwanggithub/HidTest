@@ -1,0 +1,10 @@
+INA228:set:7:0:3
+INA228:enable
+PWM1:set:10000:100.0
+TIM2:capture:neg
+CAP:set:filter:10
+CAP:start
+PWM1:set:1000:100
+DEBUG:capture:on
+CAP:true:1000000:100.0
+RELAY:enable

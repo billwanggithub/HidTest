@@ -1,0 +1,5 @@
+*IDN?
+DELAY:500
+UART:set:6
+*IDN?
+

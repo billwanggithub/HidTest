@@ -1,0 +1,4 @@
+*IDN?
+APP_BUID?
+I2C:get?:40:FE:2
+I2C:get?:40:FF:2

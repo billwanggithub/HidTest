@@ -1,0 +1,3 @@
+*IDN?
+APP_BUID?
+I2C:get?:40:00:2
